@@ -1,0 +1,30 @@
+name: Test TypeScript Lambda
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: |
+          cd lambda/typescript
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd lambda/typescript
+          npm run test
