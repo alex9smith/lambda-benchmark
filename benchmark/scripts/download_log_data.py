@@ -1,6 +1,6 @@
 from typing import List, TypedDict, Optional
 from datetime import datetime, timedelta, timezone
-from time import sleep, time
+from time import sleep
 from csv import DictWriter
 import re
 import boto3
@@ -15,113 +15,149 @@ class Row(TypedDict):
 
 class InvocationSummary(TypedDict):
     name: str
+    request_id: str
     execution_time_ms: float
     cold_start: bool
     init_duration_ms: Optional[float]
 
 
-def submit_logs_query(client, lambda_name: str) -> str:
-    finish = datetime.now(tz=timezone.utc)
-    start = datetime.now(tz=timezone.utc) - timedelta(hours=1)
-
-    response = client.start_query(
-        logGroupName=f"/aws/lambda/{lambda_name}",
-        startTime=int(start.timestamp()),
-        endTime=int(finish.timestamp()),
-        queryString="fields @timestamp, @message",
-        limit=10000,
-    )
-
-    return response["queryId"]
+def get_error_request_id(line: str) -> str:
+    if id_match := re.search(r"\s(.*?)\sERROR", line, re.IGNORECASE):
+        return id_match.group(1)
+    else:
+        raise ValueError(f"Could not find request ID in error line: {line}")
 
 
-def poll_for_query_result(client, query_id: str):
-    results = client.get_query_results(queryId=query_id)
-    while results["status"] not in [
-        "Complete",
-        "Failed",
-        "Cancelled",
-        "Timeout",
-        "Unknown",
-    ]:
-        print(f"Query ID {query_id} not ready. Waiting")
-        sleep(10)
-        results = client.get_query_results(queryId=query_id)
+class LogReportBuilder:
+    def __init__(self, client):
+        self.client = client
+        self.queries = []
+        self.failed_requests = []
 
-    return results.get("results", [])
+    def submit_logs_query(self, lambda_name: str):
+        finish = datetime.now(tz=timezone.utc)
+        start = datetime.now(tz=timezone.utc) - timedelta(hours=6)
 
-
-def parse_result_row(row) -> Row:
-    result = Row(timestamp="", message="")
-    for field in row:
-        if field["field"] == "@timestamp":
-            result["timestamp"] = field["value"]
-        elif field["field"] == "@message":
-            result["message"] = field["value"]
-
-    return result
-
-
-def process_report_rows(rows: List[Row], name: str) -> List[InvocationSummary]:
-    result = []
-    for row in rows:
-        if row["message"].startswith("REPORT"):
-            result.append(calc_report_summary(row["message"], name))
-
-    return result
-
-
-def calc_report_summary(message: str, name: str) -> InvocationSummary:
-    cold_start = False
-    init_duration_ms = None
-    if init_match := re.search(
-        r"Init Duration: (\d*\.?\d+) ms", message, re.IGNORECASE
-    ):
-        init_duration_ms = float(init_match.group(1))
-        cold_start = True
-
-    if exec_match := re.search(
-        r"Billed Duration: (\d*\.?\d+) ms", message, re.IGNORECASE
-    ):
-        return InvocationSummary(
-            name=name,
-            execution_time_ms=float(exec_match.group(1)),
-            cold_start=cold_start,
-            init_duration_ms=init_duration_ms,
+        response = self.client.start_query(
+            logGroupName=f"/aws/lambda/lambda_benchmark_{lambda_name}_lambda",
+            startTime=int(start.timestamp()),
+            endTime=int(finish.timestamp()),
+            queryString="fields @timestamp, @message",
+            limit=10000,
         )
 
-    print(f"Malformed message: {message}")
-    raise ValueError("Malformed message")
+        self.queries.append((response["queryId"], lambda_name))
+
+    def poll_for_all_query_results(self):
+        all_results = {}
+        for query_id, name in self.queries:
+            print(f"Querying results for {name}")
+            results = self.client.get_query_results(queryId=query_id)
+            while results["status"] not in [
+                "Complete",
+                "Failed",
+                "Cancelled",
+                "Timeout",
+                "Unknown",
+            ]:
+                print(f"Query ID {query_id} not ready. Waiting")
+                sleep(10)
+                results = self.client.get_query_results(queryId=query_id)
+
+            all_results[name] = results.get("results", [])
+        return all_results
+
+    def parse_result_row(self, row) -> Row:
+        result = Row(timestamp="", message="")
+        for field in row:
+            if field["field"] == "@timestamp":
+                result["timestamp"] = field["value"]
+            elif field["field"] == "@message":
+                result["message"] = field["value"]
+
+        return result
+
+    def process_report_rows(
+        self, rows: List[Row], name: str
+    ) -> List[InvocationSummary]:
+        result = []
+        for row in rows:
+            if row["message"].startswith("REPORT"):
+                result.append(self.calc_report_summary(row["message"], name))
+            elif "ERROR	Invoke Error" in row["message"]:
+                self.failed_requests.append(get_error_request_id(row["message"]))
+
+        return result
+
+    def calc_report_summary(self, message: str, name: str) -> InvocationSummary:
+        cold_start = False
+        init_duration_ms = None
+        if init_match := re.search(
+            r"Init Duration: (\d*\.?\d+) ms", message, re.IGNORECASE
+        ):
+            init_duration_ms = float(init_match.group(1))
+            cold_start = True
+
+        if exec_match := re.search(
+            r"Billed Duration: (\d*\.?\d+) ms", message, re.IGNORECASE
+        ):
+
+            if id_match := re.search(
+                r"RequestId: (.*?)(?:\s|\\t)", message, re.IGNORECASE
+            ):
+                return InvocationSummary(
+                    request_id=id_match.group(1),
+                    name=name,
+                    execution_time_ms=float(exec_match.group(1)),
+                    cold_start=cold_start,
+                    init_duration_ms=init_duration_ms,
+                )
+
+        print(f"Malformed message: {message}")
+        raise ValueError("Malformed message")
+
+    def remove_failed_requests(
+        self, rows: List[InvocationSummary]
+    ) -> List[InvocationSummary]:
+        failed_requests = set(self.failed_requests)
+        return [s for s in rows if s["request_id"] not in failed_requests]
+
+    def build_report(self) -> List[InvocationSummary]:
+        for name in LIVE_LAMBDAS:
+            print(f"Submitting query for {name} Lambda")
+            self.submit_logs_query(name)
+
+        sleep(2)
+        raw_results = self.poll_for_all_query_results()
+
+        print("Processing downloaded data")
+        parsed: List[InvocationSummary] = []
+        for name, results in raw_results.items():
+            rows = [builder.parse_result_row(row) for row in results]
+            for report in builder.process_report_rows(rows, name):
+                parsed.append(report)
+
+        print("Removing failed requests")
+        return builder.remove_failed_requests(parsed)
 
 
 def write_to_csv(data):
     with open("../data/parsed_cloudwatch_logs.csv", "w") as f:
         writer = DictWriter(
             f,
-            fieldnames=["name", "execution_time_ms", "cold_start", "init_duration_ms"],
+            fieldnames=[
+                "name",
+                "request_id",
+                "execution_time_ms",
+                "cold_start",
+                "init_duration_ms",
+            ],
         )
         writer.writeheader()
         writer.writerows(data)
 
 
 if __name__ == "__main__":
-    logs_client = boto3.client("logs")
-    print("Submitting queries")
-    queries = [
-        (submit_logs_query(logs_client, f"lambda_benchmark_{name}_lambda"), name)
-        for name in LIVE_LAMBDAS
-    ]
-    sleep(1)
-
-    raw_results = {}
-    for query_id, name in queries:
-        print(f"Querying results for {name}")
-        raw_results[name] = poll_for_query_result(logs_client, query_id)
-
-    parsed: List[InvocationSummary] = []
-    for name, results in raw_results.items():
-        rows = [parse_result_row(row) for row in results]
-        for report in process_report_rows(rows, name):
-            parsed.append(report)
-
-    write_to_csv(parsed)
+    builder = LogReportBuilder(boto3.client("logs"))
+    report = builder.build_report()
+    write_to_csv(report)
