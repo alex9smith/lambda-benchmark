@@ -16,6 +16,7 @@ Each lambda implementation has the same functionality:
 - NPM
 - ESBuild availble globally
 - OpenTofu (see `.opentofu-version`)
+- Python
 
 ## Deploying
 
@@ -37,3 +38,15 @@ cd infra
 tofu init
 tofu apply
 ```
+
+## Analysing the data
+
+Install the Python requirements and run the script to download the report data from Cloudwatch:
+
+```bash
+cd benchmark/scripts
+pip install -r requirements.txt
+python download_log_data.py
+```
+
+This will save a CSV of the results in `benchmark/data`

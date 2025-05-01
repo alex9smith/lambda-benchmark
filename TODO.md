@@ -14,6 +14,7 @@
 
 ## Benchmark
 
+- Filter out reports from invocations that failed
 - Plan how to benchmark the lambdas
 - Where to put data for analysis
 - Initial analysis - see what's there
