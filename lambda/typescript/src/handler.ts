@@ -1,5 +1,7 @@
 import { SQSEvent, Context } from "aws-lambda";
 import { Logger } from "@aws-lambda-powertools/logger";
+import { Ajv } from "ajv";
+import { schema } from "./schema";
 
 export interface Event {
   eventId: string;
@@ -12,7 +14,17 @@ export interface Event {
   };
 }
 
-export function validateEvent(event: Event): void {}
+const ajv = new Ajv();
+const validate = ajv.compile(schema);
+
+export function validateEvent(event: Event): void {
+  validate(event);
+
+  if (validate.errors) {
+    const first = validate.errors.pop();
+    throw new Error(`Event failed validation: ${first?.message}`);
+  }
+}
 
 export async function writeEventToDynamoDb(event: Event): Promise<void> {}
 
