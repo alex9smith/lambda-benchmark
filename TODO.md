@@ -9,8 +9,8 @@
 
 ## Infrastucture
 
-- Decide Terraform vs. Cloudformation
-- How to build each lambda?
+- Deploy the other lambdas
+- Refactor queue / logs / lambda into a module?
 
 ## Benchmark
 

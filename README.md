@@ -12,6 +12,28 @@ Each lambda implementation has the same functionality:
 
 ## Requirements
 
-Node >= v 20
-NPM
-ESBuild availble globally
+- Node >= v20
+- NPM
+- ESBuild availble globally
+- OpenTofu (see `.opentofu-version`)
+
+## Deploying
+
+The prototype is deployed with [OpenTofu](https://opentofu.org/).
+Valid AWS credentials must be present in your shell.
+
+First, build the lambda:
+
+```bash
+cd lambda/typescript
+npm run build
+
+```
+
+Then deploy:
+
+```bash
+cd infra
+tofu init
+tofu apply
+```

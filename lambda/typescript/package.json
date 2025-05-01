@@ -6,7 +6,10 @@
     "node": ">=22"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "prebuild": "rm -rf dist",
+    "build": "esbuild src/handler.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "postbuild": "cd dist && zip -r index.zip index.js*"
   },
   "author": "Alex Whitehead-Smith",
   "license": "MIT",

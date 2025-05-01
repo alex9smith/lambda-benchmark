@@ -1,0 +1,3 @@
+/.terraform
+production.auto.tfvars
+terraform.tfstate*
