@@ -1,6 +1,12 @@
 import { SQSEvent, Context } from "aws-lambda";
 import { Logger } from "@aws-lambda-powertools/logger";
 import { Ajv } from "ajv";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  PutCommand,
+  PutCommandOutput,
+} from "@aws-sdk/lib-dynamodb";
 import { schema } from "./schema";
 
 export interface Event {
@@ -17,6 +23,11 @@ export interface Event {
 const ajv = new Ajv();
 const validate = ajv.compile(schema);
 
+const { TABLE_NAME } = process.env;
+const dynamoDocClient = DynamoDBDocumentClient.from(new DynamoDBClient({}), {
+  marshallOptions: { convertClassInstanceToMap: true },
+});
+
 export function validateEvent(event: Event): void {
   validate(event);
 
@@ -26,7 +37,15 @@ export function validateEvent(event: Event): void {
   }
 }
 
-export async function writeEventToDynamoDb(event: Event): Promise<void> {}
+export async function writeEventToDynamoDb(
+  event: Event
+): Promise<PutCommandOutput> {
+  const command = new PutCommand({
+    TableName: TABLE_NAME,
+    Item: { ...event },
+  });
+  return dynamoDocClient.send(command);
+}
 
 const logger = new Logger();
 

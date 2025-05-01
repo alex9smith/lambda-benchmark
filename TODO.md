@@ -2,7 +2,6 @@
 
 ## Lambdas
 
-- Typescript
 - Python
 - Ruby
 - Rust
