@@ -1,0 +1,42 @@
+use serde_json::json;
+
+pub fn get_schema() -> serde_json::Value {
+    json!({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "eventId": {
+        "type": "string",
+        "maxLength": 128
+        },
+        "emitterCode": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100
+        },
+        "action": {
+        "type": "string",
+        "enum": ["sign_in", "sign_out", "create_account", "delete_account"]
+        },
+        "user": {
+        "type": "object",
+        "properties": {
+            "id": {
+            "type": "string",
+            "maxLength": 128
+            },
+            "sessionId": {
+            "type": "string",
+            "maxLength": 128
+            },
+            "deviceId": {
+            "type": "string",
+            "maxLength": 128
+            }
+        },
+        "required": ["id", "sessionId"]
+        }
+    },
+    "required": ["eventId", "emitterCode", "action", "user"]
+    })
+}

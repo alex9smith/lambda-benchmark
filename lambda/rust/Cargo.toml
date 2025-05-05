@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 aws_lambda_events = { version = "0.15.1", default-features = false, features = ["sqs"] }
+jsonschema = { version = "0.30.0", default-features = false }
 
 lambda_runtime = "0.13.0"
 serde = { version = "1.0.219", features = ["derive"] }
