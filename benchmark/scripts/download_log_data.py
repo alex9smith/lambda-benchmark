@@ -5,7 +5,7 @@ from csv import DictWriter
 import re
 import boto3
 
-LIVE_LAMBDAS = ["typescript"]
+LIVE_LAMBDAS = ["typescript", "rust"]
 
 
 class Row(TypedDict):

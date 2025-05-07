@@ -1,7 +1,11 @@
 use aws_lambda_events::event::sqs::SqsEvent;
+use aws_sdk_dynamodb::types::AttributeValue;
+use aws_sdk_dynamodb::Client;
 use lambda_runtime::{Error, LambdaEvent};
 use serde::{Deserialize, Serialize};
 use serde_json::{self, json};
+use std::collections;
+use std::env;
 
 use crate::schema::get_schema;
 
@@ -26,9 +30,48 @@ pub(crate) fn validate_event(validator: &jsonschema::Validator, event: &Event) {
     assert!(validator.is_valid(&json!(&event)));
 }
 
+pub(crate) async fn write_event(
+    client: &Client,
+    event: Event,
+    table: &String,
+) -> Result<(), aws_sdk_dynamodb::Error> {
+    let mut user = collections::HashMap::new();
+    user.insert("id".to_string(), AttributeValue::S(event.user.id));
+    user.insert(
+        "sessionId".to_string(),
+        AttributeValue::S(event.user.session_id),
+    );
+
+    if event.user.device_id.is_some() {
+        user.insert(
+            "deviceId".to_string(),
+            AttributeValue::S(event.user.device_id.unwrap()),
+        );
+    }
+
+    let request = client
+        .put_item()
+        .table_name(table)
+        .item("eventId", AttributeValue::S(event.event_id))
+        .item(
+            "emitterCode",
+            AttributeValue::N(event.emitter_code.to_string()),
+        )
+        .item("action", AttributeValue::S(event.action))
+        .item("user", AttributeValue::M(user));
+
+    request.send().await?;
+
+    Ok(())
+}
+
 pub(crate) async fn function_handler(lambda_event: LambdaEvent<SqsEvent>) -> Result<(), Error> {
     let validator = jsonschema::validator_for(&get_schema())?;
     let payload = lambda_event.payload;
+
+    let table_name = env::var("TABLE_NAME")?;
+    let config = aws_config::load_defaults(aws_config::BehaviorVersion::latest()).await;
+    let client = aws_sdk_dynamodb::Client::new(&config);
 
     for message in payload.records {
         let body = match message.body {
@@ -37,6 +80,7 @@ pub(crate) async fn function_handler(lambda_event: LambdaEvent<SqsEvent>) -> Res
         };
         let event: Event = serde_json::from_str(&body)?;
         validate_event(&validator, &event);
+        write_event(&client, event, &table_name).await?;
     }
 
     Ok(())

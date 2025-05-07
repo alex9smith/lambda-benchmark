@@ -1,0 +1,10 @@
+{
+  "eventId": "event_id",
+  "emitterCode": 50,
+  "action": "sign_in",
+  "user": {
+    "id": "id",
+    "sessionId": "session_id",
+    "deviceId": "device_id"
+  }
+}

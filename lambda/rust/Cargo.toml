@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+aws-config = "1.6.2"
+aws-sdk-dynamodb = "1.73.0"
 aws_lambda_events = { version = "0.15.1", default-features = false, features = ["sqs"] }
 jsonschema = { version = "0.30.0", default-features = false }
 
