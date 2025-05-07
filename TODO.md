@@ -10,7 +10,6 @@
 ## Infrastucture
 
 - Deploy the other lambdas
-- Refactor queue / logs / lambda into a module?
 
 ## Benchmark
 

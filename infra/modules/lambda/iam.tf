@@ -11,8 +11,8 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-resource "aws_iam_role" "lambda_benchmark_lambda_role" {
-  name               = "lambda_benchmark_lambda_role"
+resource "aws_iam_role" "base_lambda_role" {
+  name               = "lambda_benchmark_base_${var.language_name}_role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
   tags               = var.default_tags
 }
@@ -31,17 +31,17 @@ data "aws_iam_policy_document" "lambda_logging" {
   }
 }
 
-resource "aws_iam_policy" "lambda_benchmark_allow_logging" {
-  name        = "lambda_benchmark_allow_logging"
+resource "aws_iam_policy" "allow_logging" {
+  name        = "lambda_benchmark_${var.language_name}_allow_logging"
   path        = "/"
-  description = "Allow lambdas in the lambda_benchmark app to log to Cloudwatch"
+  description = "Allow the ${var.language_name} lambda in the lambda_benchmark app to log to Cloudwatch"
   policy      = data.aws_iam_policy_document.lambda_logging.json
   tags        = var.default_tags
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_benchmark_allow_logging" {
-  role       = aws_iam_role.lambda_benchmark_lambda_role.name
-  policy_arn = aws_iam_policy.lambda_benchmark_allow_logging.arn
+resource "aws_iam_role_policy_attachment" "allow_logging" {
+  role       = aws_iam_role.base_lambda_role.name
+  policy_arn = aws_iam_policy.allow_logging.arn
 }
 
 data "aws_iam_policy_document" "dynamodb_access" {
@@ -52,29 +52,29 @@ data "aws_iam_policy_document" "dynamodb_access" {
       "dynamodb:PutItem",
     ]
 
-    resources = [aws_dynamodb_table.table.arn]
+    resources = ["arn:aws:dynamodb:*:*:table/${var.dynamodb_table_name}"]
   }
 }
 
 
-resource "aws_iam_policy" "lambda_benchmark_dynamodb_table_access" {
-  name        = "lambda_benchmark_dynamodb_table_access"
+resource "aws_iam_policy" "dynamodb_access" {
+  name        = "lambda_benchmark_${var.language_name}_dynamodb_access"
   path        = "/"
-  description = "IAM policy to allow lambdas in the lambda_benchmark app to write to DynamoDB"
+  description = "IAM policy to allow the ${var.language_name} lambda in the lambda_benchmark app to write to DynamoDB"
   policy      = data.aws_iam_policy_document.dynamodb_access.json
   tags        = var.default_tags
 }
 
-resource "aws_iam_role_policy_attachment" "dynamodb_table_access" {
-  role       = aws_iam_role.lambda_benchmark_lambda_role.name
-  policy_arn = aws_iam_policy.lambda_benchmark_dynamodb_table_access.arn
+resource "aws_iam_role_policy_attachment" "dynamodb_access" {
+  role       = aws_iam_role.base_lambda_role.name
+  policy_arn = aws_iam_policy.dynamodb_access.arn
 }
 
 data "aws_iam_policy_document" "sqs_access" {
   statement {
     sid       = "AllowSQSPermissions"
     effect    = "Allow"
-    resources = [aws_sqs_queue.typescript_lambda_queue.arn]
+    resources = [aws_sqs_queue.queue.arn]
 
     actions = [
       "sqs:ChangeMessageVisibility",
@@ -86,15 +86,15 @@ data "aws_iam_policy_document" "sqs_access" {
 
 }
 
-resource "aws_iam_policy" "lambda_benchmark_sqs_access" {
-  name        = "lambda_benchmark_sqs_access"
+resource "aws_iam_policy" "sqs_access" {
+  name        = "lambda_benchmark_${var.language_name}_sqs_access"
   path        = "/"
-  description = "IAM policy to allow lambdas in the lambda_benchmark app to read from SQS"
+  description = "IAM policy to allow the ${var.language_name} lambda in the lambda_benchmark app to read from SQS"
   policy      = data.aws_iam_policy_document.sqs_access.json
   tags        = var.default_tags
 }
 
 resource "aws_iam_role_policy_attachment" "sqs_access" {
-  role       = aws_iam_role.lambda_benchmark_lambda_role.name
-  policy_arn = aws_iam_policy.lambda_benchmark_sqs_access.arn
+  role       = aws_iam_role.base_lambda_role.name
+  policy_arn = aws_iam_policy.sqs_access.arn
 }
