@@ -14,9 +14,9 @@ Each lambda implementation has the same functionality:
 
 - Node >= v20
 - NPM
-- ESBuild availble globally
 - OpenTofu (see `.opentofu-version`)
 - Python
+- Rust >= 1.80.0
 
 ## Deploying
 
