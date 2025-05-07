@@ -1,11 +1,11 @@
 require 'rspec'
 require 'lambda_function'
 
-RSpec.describe Handler do
+RSpec.describe Lambda do
     describe "#add" do
         it "adds two numbers together" do
-            handler = Handler.new
-            expect(handler.add(1,2)).to eq(3) 
+            handler = 
+            expect(Lambda::Handler.new.add(1,2)).to eq(3) 
         end
     end
 end
