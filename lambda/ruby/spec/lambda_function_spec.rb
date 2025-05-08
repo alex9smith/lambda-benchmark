@@ -5,7 +5,7 @@ RSpec.describe Lambda do
     describe "#add" do
         it "adds two numbers together" do
             handler = 
-            expect(Lambda::Handler.new.add(1,2)).to eq(3) 
+            expect(Lambda::Handler.add(1,2)).to eq(3) 
         end
     end
 end
