@@ -14,6 +14,5 @@
 
 ## Benchmark
 
-- Plan how to benchmark the lambdas
 - Initial analysis - see what's there
 - Script for reproducible analyses
