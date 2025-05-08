@@ -1,7 +1,14 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
+    bigdecimal (3.1.9)
     diff-lcs (1.6.1)
+    json-schema (5.1.1)
+      addressable (~> 2.8)
+      bigdecimal (~> 3.1)
+    public_suffix (6.0.2)
     rake (13.2.1)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
@@ -22,6 +29,7 @@ PLATFORMS
   x86_64-darwin-23
 
 DEPENDENCIES
+  json-schema
   rake
   rspec
 
