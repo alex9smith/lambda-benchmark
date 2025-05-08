@@ -1,13 +1,17 @@
+require 'aws-sdk-dynamodb'
 require "json"
 require "json-schema"
 
 module Lambda
   class Handler
-    def self.process(lambda_event:, context:)
-      lambda_event['Records'].each do |message|
-        event = JSON.parse(message)
-        self.validate_event(event)
-        self.write_to_dynamo_db(event)
+    def self.process(event:, context:)
+      client = Aws::DynamoDB::Client.new
+      table = Aws::DynamoDB::Resource.new(client: client).table(ENV['TABLE_NAME'])
+
+      event['Records'].each do |message|
+        sqs_event = JSON.parse(message['body'])
+        self.validate_event(sqs_event)
+        self.write_to_dynamo_db(table, sqs_event)
       end
     end
 
@@ -15,7 +19,8 @@ module Lambda
       JSON::Validator.validate!(Lambda.schema, event)
     end
 
-    def self.write_to_dynamo_db(event)
+    def self.write_to_dynamo_db(table, event)
+      table.put_item(item: event)
     end
   end
 

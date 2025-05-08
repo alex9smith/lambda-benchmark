@@ -29,5 +29,7 @@ bundle config set --local path 'vendor/bundle' && bundle install
 Zip the dependencies and Ruby code together:
 
 ```bash
-zip -r deploy.zip lambda_function.rb vendor
+rm -f deploy.zip
+zip -r deploy.zip vendor
+zip -uj deploy.zip lib/lambda_function.rb
 ```
