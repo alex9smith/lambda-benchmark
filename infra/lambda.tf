@@ -17,3 +17,13 @@ module "rust_lambda" {
   handler             = "bootstrap"
   dynamodb_table_name = var.dynamodb_table_name
 }
+
+module "ruby_lambda" {
+  source = "./modules/lambda"
+
+  source_file         = "../lambda/ruby/deploy.zip"
+  language_name       = "ruby"
+  runtime             = "ruby3.3"
+  handler             = "lambda_function.Lambda::Handler.process"
+  dynamodb_table_name = var.dynamodb_table_name
+}
