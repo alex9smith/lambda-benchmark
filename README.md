@@ -2,13 +2,17 @@
 
 A prototype which implements a simple AWS Lambda function in several programming languages and benchmarks the relative performance.
 
-## Lambda functionality
-
 Each lambda implementation has the same functionality:
 
 1. Read a batch of messages off an SQS queue
 2. Validate the content of each message against the [shared JSON schema](./schema/event.json)
 3. Write each message to a DynamoDB table with the partition key as the message's event ID and a TTL
+
+The benchmark is designed to replicate real world use as much as possible.
+The messages are sent to SQS in as close to one go as possible which means the lambdas are all running at the same time.
+They all share the same DynamoDB table so need to compete for read resource.
+The DynamoDB table has a randomly generated partition key to avoid 'hot' partitions.
+Each Lambda function bundles the minimal dependencies - usually just a library for JSON Schema validation and the necessary AWS / runtime dependencies.
 
 ## Requirements
 
