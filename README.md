@@ -39,14 +39,18 @@ tofu init
 tofu apply
 ```
 
-## Analysing the data
+## Benchmarking and analysing the data
 
-Install the Python requirements and run the script to download the report data from Cloudwatch:
+Install the Python requirements and run the script to send events to the Lambdas:
 
 ```bash
 cd benchmark/scripts
 pip install -r requirements.txt
-python download_log_data.py
+python run_load_test.py
 ```
 
-This will save a CSV of the results in `benchmark/data`
+Then wait 5 minutes for Cloudwatch to process the logs before downloading them:
+
+```bash
+python download_log_data.py
+```
