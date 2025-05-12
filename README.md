@@ -59,3 +59,10 @@ Then wait 5 minutes for Cloudwatch to process the logs before downloading them:
 ```bash
 python download_log_data.py
 ```
+
+Finally, run the analysis script.
+This will print summary data to your terminal and save plots in `/benchmark/scripts/plots`.
+
+```bash
+python analyse_results.py
+```
