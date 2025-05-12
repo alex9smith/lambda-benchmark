@@ -37,3 +37,14 @@ module "python_lambda" {
   handler             = "lambda_function.handler"
   dynamodb_table_name = var.dynamodb_table_name
 }
+
+module "java_lambda" {
+  source = "./modules/lambda"
+
+  source_file         = "../lambda/java/JavaLambda/target/JavaLambda.jar"
+  language_name       = "java"
+  runtime             = "java21"
+  handler             = "alex9smith.App::handleRequest"
+  dynamodb_table_name = var.dynamodb_table_name
+  lambda_memory       = 256
+}
