@@ -18,6 +18,11 @@ variable "dynamodb_table_name" {
   type = string
 }
 
+variable "lambda_memory" {
+  type    = number
+  default = 128
+}
+
 variable "default_tags" {
   description = "Tags to apply to AWS resources"
   default = {

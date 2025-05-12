@@ -9,6 +9,7 @@ resource "aws_lambda_function" "lambda" {
   timeout                        = 5
   tags                           = var.default_tags
   reserved_concurrent_executions = 20
+  memory_size                    = var.lambda_memory
 
   environment {
     variables = {
