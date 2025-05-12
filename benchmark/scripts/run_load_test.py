@@ -12,6 +12,7 @@ class LiveLambdas(Enum):
     typescript = auto()
     rust = auto()
     ruby = auto()
+    python = auto()
 
 
 class User(TypedDict):
