@@ -21,6 +21,7 @@ Each Lambda function bundles the minimal dependencies - usually just a library f
 - OpenTofu (see `.opentofu-version`)
 - Python
 - Rust >= 1.80.0
+- Ruby
 
 ## Deploying
 
