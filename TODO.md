@@ -2,10 +2,7 @@
 
 ## Lambdas
 
-- Python
-- Java
-
-- Use futures / async to write to DynamoDB concurrently in the Rust lambda
+- Use futures / async to write to DynamoDB concurrently in the Rust & Java lambdas
 
 ## Benchmark
 
