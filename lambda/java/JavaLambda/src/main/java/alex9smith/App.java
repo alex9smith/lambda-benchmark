@@ -1,5 +1,9 @@
 package alex9smith;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
@@ -80,6 +84,7 @@ public class App implements RequestHandler<SQSEvent, Object> {
 
   @Override
   public SQSEvent handleRequest(final SQSEvent input, final Context context) {
+    ArrayList<CompletableFuture<PutItemResponse>> futures = new ArrayList<>();
     for (SQSMessage message : input.getRecords()) {
       try {
         jsonSchema.validate(message.getBody(), InputFormat.JSON);
@@ -88,7 +93,7 @@ public class App implements RequestHandler<SQSEvent, Object> {
             .tableName(tableName)
             .item(event.toAttributeMap())
             .build();
-        dynamoDbClient.putItem(request).join();
+        futures.add(dynamoDbClient.putItem(request));
 
       } catch (JsonProcessingException e) {
         e.printStackTrace();
@@ -96,6 +101,9 @@ public class App implements RequestHandler<SQSEvent, Object> {
       }
 
     }
+
+    List<PutItemResponse> results = futures.stream().map(CompletableFuture::join).toList();
+    System.out.println(results.size());
 
     return input;
   }
