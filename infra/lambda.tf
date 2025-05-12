@@ -27,3 +27,13 @@ module "ruby_lambda" {
   handler             = "lambda_function.Lambda::Handler.process"
   dynamodb_table_name = var.dynamodb_table_name
 }
+
+module "python_lambda" {
+  source = "./modules/lambda"
+
+  source_file         = "../lambda/python/deploy.zip"
+  language_name       = "python"
+  runtime             = "python3.12"
+  handler             = "lambda_function.handler"
+  dynamodb_table_name = var.dynamodb_table_name
+}
