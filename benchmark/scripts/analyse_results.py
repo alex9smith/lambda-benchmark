@@ -29,26 +29,9 @@ def print_and_plot_init_duration_by_language(data: pd.DataFrame) -> None:
     ax.set_xlabel("Init duration (ms)")
     ax.set_ylabel("Count")
     ax.set_xlim(0)
+    sns.move_legend(ax, "upper right")
     sns.despine()
     save_plot(ax, "init_duration_by_language")
-
-
-def print_and_plot_run_time_by_language(data: pd.DataFrame) -> None:
-    print("Execution times per language - p50, p95, p99")
-    print(
-        data.groupby(["name", "cold_start"])["execution_time_ms"]
-        .quantile(q=np.array([0.50, 0.95, 0.99]))
-        .unstack()
-    )
-    print("-" * 10)
-
-    ax = sns.histplot(x="execution_time_ms", hue="name", binwidth=5, data=data)
-    ax.set_title("Execution times by language")
-    ax.set_xlabel("Execution time (ms)")
-    ax.set_ylabel("Count")
-    ax.set_xlim(0, 500)
-    sns.despine()
-    save_plot(ax, "run_time_by_language")
 
 
 def print_total_cost_by_language(data: pd.DataFrame) -> None:
@@ -87,8 +70,7 @@ def plot_run_time_quantiles_by_language(data: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-    data = pd.read_csv("../data/parsed_cloudwatch_logs.csv")
+    data = pd.read_csv("../data/parsed_cloudwatch_logs.csv").fillna(0)
     print_and_plot_init_duration_by_language(data=data)
-    print_and_plot_run_time_by_language(data=data)
     print_total_cost_by_language(data=data)
     plot_run_time_quantiles_by_language(data=data)
