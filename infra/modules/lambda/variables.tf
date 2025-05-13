@@ -23,6 +23,11 @@ variable "lambda_memory" {
   default = 128
 }
 
+variable "timeout" {
+  type    = number
+  default = 5
+}
+
 variable "default_tags" {
   description = "Tags to apply to AWS resources"
   default = {

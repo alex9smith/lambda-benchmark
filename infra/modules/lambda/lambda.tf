@@ -6,7 +6,7 @@ resource "aws_lambda_function" "lambda" {
   source_code_hash               = filebase64sha256(var.source_file)
   runtime                        = var.runtime
   architectures                  = ["arm64"]
-  timeout                        = 5
+  timeout                        = var.timeout
   tags                           = var.default_tags
   reserved_concurrent_executions = 20
   memory_size                    = var.lambda_memory
