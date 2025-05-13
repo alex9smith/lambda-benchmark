@@ -5,7 +5,7 @@ from csv import DictWriter
 import re
 import boto3
 
-LIVE_LAMBDAS = ["typescript", "rust", "ruby", "python"]
+from run_load_test import LiveLambdas
 
 
 class Row(TypedDict):
@@ -120,12 +120,13 @@ class LogReportBuilder:
         self, rows: List[InvocationSummary]
     ) -> List[InvocationSummary]:
         failed_requests = set(self.failed_requests)
+        print(f"Found {len(failed_requests)} failed requests")
         return [s for s in rows if s["request_id"] not in failed_requests]
 
     def build_report(self) -> List[InvocationSummary]:
-        for name in LIVE_LAMBDAS:
-            print(f"Submitting query for {name} Lambda")
-            self.submit_logs_query(name)
+        for name in LiveLambdas:
+            print(f"Submitting query for {name.name} Lambda")
+            self.submit_logs_query(name.name)
 
         sleep(2)
         raw_results = self.poll_for_all_query_results()
