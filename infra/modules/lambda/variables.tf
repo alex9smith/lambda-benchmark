@@ -20,7 +20,7 @@ variable "dynamodb_table_name" {
 
 variable "lambda_memory" {
   type    = number
-  default = 128
+  default = 256
 }
 
 variable "timeout" {

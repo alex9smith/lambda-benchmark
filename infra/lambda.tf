@@ -46,6 +46,5 @@ module "java_lambda" {
   runtime             = "java21"
   handler             = "alex9smith.App::handleRequest"
   dynamodb_table_name = var.dynamodb_table_name
-  lambda_memory       = 256
   timeout             = 10
 }
