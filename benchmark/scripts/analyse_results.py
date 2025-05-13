@@ -8,7 +8,8 @@ sns.set_theme(style="whitegrid", palette="colorblind")
 
 def save_plot(ax, plot_name: str) -> None:
     figure = ax.get_figure()
-    figure.savefig(f"plots/{plot_name}.png")
+    figure.set_size_inches(8, 4.5)
+    figure.savefig(f"plots/{plot_name}.svg")
     plt.close(figure)
 
 
@@ -64,8 +65,30 @@ def print_total_cost_by_language(data: pd.DataFrame) -> None:
     print("-" * 10)
 
 
+def plot_run_time_quantiles_by_language(data: pd.DataFrame) -> None:
+    quantiles = data.groupby("name")["execution_time_ms"].quantile(
+        q=np.array([0.50, 0.95, 0.99])
+    )
+    quantiles = quantiles.reset_index()
+    quantiles.columns = ["name", "quantile", "value"]
+    quantiles["quantile"] = quantiles["quantile"].astype(str)
+    print("Execution time quantiles by language")
+    print(quantiles)
+    print("-" * 10)
+
+    ax = sns.barplot(data=quantiles, x="name", y="value", hue="quantile")
+    ax.set_title("Execution times by language")
+    ax.set_xlabel("Language")
+    ax.set_ylabel("Execution time (ms)")
+    ax.set_ylim(0, 2000)
+    ax.legend(title="Quantile")
+    sns.despine()
+    save_plot(ax, "run_time_quantiles_by_language")
+
+
 if __name__ == "__main__":
     data = pd.read_csv("../data/parsed_cloudwatch_logs.csv")
     print_and_plot_init_duration_by_language(data=data)
     print_and_plot_run_time_by_language(data=data)
     print_total_cost_by_language(data=data)
+    plot_run_time_quantiles_by_language(data=data)
