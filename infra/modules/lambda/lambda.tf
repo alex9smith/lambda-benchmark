@@ -8,7 +8,7 @@ resource "aws_lambda_function" "lambda" {
   architectures                  = ["arm64"]
   timeout                        = var.timeout
   tags                           = var.default_tags
-  reserved_concurrent_executions = 20
+  # reserved  _concurrent_executions = 1
   memory_size                    = var.lambda_memory
 
   environment {
