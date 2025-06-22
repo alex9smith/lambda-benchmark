@@ -130,12 +130,6 @@
     <profiles>
         <profile>
             <id>native</id>
-            <activation>
-                <os>
-                    <name>lambda</name>
-                    <arch>arm64</arch>
-                </os>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
