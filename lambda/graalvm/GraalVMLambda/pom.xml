@@ -17,6 +17,7 @@
         <aws.java.sdk.version>2.31.33</aws.java.sdk.version>
         <aws.lambda.java.version>1.2.3</aws.lambda.java.version>
         <junit5.version>5.10.1</junit5.version>
+        <mainClass>com.amazonaws.services.lambda.runtime.api.client.AWSLambda</mainClass>
     </properties>
 
     <dependencyManagement>
@@ -132,6 +133,39 @@
             <id>native</id>
             <build>
                 <plugins>
+                    <!-- <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>java-agent</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>java</executable>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                    <arguments>
+                                        <argument>-classpath</argument>
+                                        <classpath/>
+                                        <argument>${mainClass}</argument>
+                                        <argument>'{}'</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>native</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${project.build.directory}/${imageName}</executable>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin> -->
                     <plugin>
                     <groupId>org.graalvm.buildtools</groupId>
                     <artifactId>native-maven-plugin</artifactId>
@@ -145,16 +179,20 @@
                         </goals>
                         <phase>package</phase>
                         </execution>
-                        <execution>
-                        <id>test-native</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <phase>test</phase>
-                        </execution>
                     </executions>
                     <configuration>
-                        <mainClass>com.amazonaws.services.lambda.runtime.api.client.AWSLambda</mainClass>
+                        <mainClass>${mainClass}</mainClass>
+                        <agent>
+                            <enabled>true</enabled>
+                        </agent>
+                        <metadataCopy>
+                            <!-- <disabledStages>
+                                <stage>main</stage>
+                            </disabledStages> -->
+                            <merge>true</merge>
+                            <outputDirectory>src/test/resources/META-INF/native-image</outputDirectory>
+                        </metadataCopy>
+                        <verbose>true</verbose>
                     </configuration>
                     </plugin>
                     <plugin>
