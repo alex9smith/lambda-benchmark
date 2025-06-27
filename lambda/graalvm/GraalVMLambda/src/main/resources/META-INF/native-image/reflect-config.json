@@ -1,0 +1,101 @@
+[
+{
+  "name":"alex9smith.AppTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"handleRequest_full","parameterTypes":[] }, {"name":"handleRequest_shouldReturnConstantValue","parameterTypes":[] }]
+},
+{
+  "name":"alex9smith.App",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"handleRequest","parameterTypes":["com.amazonaws.services.lambda.runtime.events.SQSEvent", "com.amazonaws.services.lambda.runtime.Context"] }]
+},
+{
+  "name":"alex9smith.Event",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"alex9smith.User",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.ethlo.time.ITU"
+},
+{
+  "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.HmacCore$HmacSHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"java.security.SecureRandomParameters"
+},
+{
+  "name":"java.util.concurrent.ForkJoinTask",
+  "fields":[{"name":"aux"}, {"name":"status"}]
+},
+{
+  "name":"java.util.concurrent.atomic.AtomicBoolean",
+  "fields":[{"name":"value"}]
+},
+{
+  "name":"java.util.concurrent.atomic.AtomicReference",
+  "fields":[{"name":"value"}]
+},
+{
+  "name":"jdk.internal.misc.Unsafe"
+},
+{
+  "name":"kotlin.Unit"
+},
+{
+  "name":"org.apache.maven.surefire.junitplatform.JUnitPlatformProvider",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.maven.surefire.api.provider.ProviderParameters"] }]
+},
+{
+  "name":"org.apiguardian.api.API",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"scala.util.Properties"
+},
+{
+  "name":"software.amazon.awssdk.crt.android.CrtPlatformImpl"
+},
+{
+  "name":"software.amazon.awssdk.crt.linux.CrtPlatformImpl"
+},
+{
+  "name":"software.amazon.awssdk.crt.test.android.CrtPlatformImpl"
+},
+{
+  "name":"software.amazon.awssdk.crt.test.linux.CrtPlatformImpl"
+},
+{
+  "name":"sun.security.provider.NativePRNG",
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
+},
+{
+  "name":"sun.security.provider.SHA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+}
+]
