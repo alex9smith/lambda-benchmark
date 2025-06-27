@@ -36,3 +36,7 @@ variable "default_tags" {
   }
 }
 
+variable "arch" {
+  type = string
+  default = "arm64"
+}

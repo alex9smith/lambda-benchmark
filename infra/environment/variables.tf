@@ -19,3 +19,8 @@ variable "default_tags" {
     Application = "Lambda benchmark prototype"
   }
 }
+
+variable "arch" {
+  type = string
+  default = "arm64"
+}

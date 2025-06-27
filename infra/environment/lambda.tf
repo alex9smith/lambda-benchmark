@@ -50,12 +50,13 @@
 # }
 
 module "graalvm_lambda" {
-  source = "./modules/lambda"
+  source = "../modules/lambda"
 
-  source_file         = "../lambda/graalvm/GraalVMLambda/target/function.zip"
+  source_file         = "../../../lambda/graalvm/GraalVMLambda/target/function.zip"
   language_name       = "graalvm"
   runtime             = "provided.al2023"
   handler             = "alex9smith.App::handleRequest"
   dynamodb_table_name = var.dynamodb_table_name
   timeout             = 10
+  arch                = var.arch
 }
