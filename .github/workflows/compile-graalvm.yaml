@@ -31,5 +31,5 @@ jobs:
           AWS_REGION=eu-west-2 mvn -Pnative package
       - uses: actions/upload-artifact@v4
         with:
-          name: target
+          name: function.zip
           path: lambda/graalvm/GraalVMLambda/target/function.zip
