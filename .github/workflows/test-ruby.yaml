@@ -1,0 +1,31 @@
+name: Test Ruby Lambda
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ./lambda/ruby
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: |
+          cd lambda/ruby
+          bundle install
+
+      - name: Run tests
+        run: |
+          cd lambda/ruby
+          bundle exec rake test
