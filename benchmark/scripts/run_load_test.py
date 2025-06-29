@@ -5,7 +5,7 @@ import json
 import boto3
 
 MAX_BATCH_SIZE = 10  # 10 is the limit on the SQS SendMessageBatch API
-EVENTS_PER_LAMBDA = 3000
+EVENTS_PER_LAMBDA = 1
 
 
 class LiveLambdas(Enum):
@@ -14,6 +14,7 @@ class LiveLambdas(Enum):
     ruby = auto()
     python = auto()
     java = auto()
+    graalvm = auto()
 
 
 class User(TypedDict):
