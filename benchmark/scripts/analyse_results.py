@@ -16,6 +16,7 @@ def save_plot(ax, plot_name: str) -> None:
 def print_and_plot_init_duration_by_language(data: pd.DataFrame) -> None:
     cold_starts = data[data["cold_start"] == True]
 
+
     print("Cold start times per language - p50, p95, p99")
     print(
         cold_starts.groupby("name")["init_duration_ms"]
@@ -24,7 +25,7 @@ def print_and_plot_init_duration_by_language(data: pd.DataFrame) -> None:
     )
     print("-" * 10)
 
-    ax = sns.histplot(x="init_duration_ms", hue="name", binwidth=20, data=data)
+    ax = sns.histplot(x="init_duration_ms", hue="name", binwidth=20, data=cold_starts)
     ax.set_title("Cold start times by language")
     ax.set_xlabel("Init duration (ms)")
     ax.set_ylabel("Count")
