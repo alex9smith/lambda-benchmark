@@ -7,6 +7,7 @@ module "typescript_lambda" {
   handler             = "index.handler"
   dynamodb_table_name = var.dynamodb_table_name
   arch                = var.arch
+  reserved_concurrent_executions = var.reserved_concurrent_executions
 }
 
 module "rust_lambda" {
@@ -18,6 +19,7 @@ module "rust_lambda" {
   handler             = "bootstrap"
   dynamodb_table_name = var.dynamodb_table_name
   arch                = var.arch
+  reserved_concurrent_executions = var.reserved_concurrent_executions
 }
 
 module "ruby_lambda" {
@@ -29,6 +31,7 @@ module "ruby_lambda" {
   handler             = "lambda_function.Lambda::Handler.process"
   dynamodb_table_name = var.dynamodb_table_name
   arch                = var.arch
+  reserved_concurrent_executions = var.reserved_concurrent_executions
 }
 
 module "python_lambda" {
@@ -40,6 +43,7 @@ module "python_lambda" {
   handler             = "lambda_function.handler"
   dynamodb_table_name = var.dynamodb_table_name
   arch                = var.arch
+  reserved_concurrent_executions = var.reserved_concurrent_executions
 }
 
 module "java_lambda" {
@@ -52,6 +56,7 @@ module "java_lambda" {
   dynamodb_table_name = var.dynamodb_table_name
   timeout             = 10
   arch                = var.arch
+  reserved_concurrent_executions = var.reserved_concurrent_executions
 }
 
 module "graalvm_lambda" {
@@ -64,4 +69,5 @@ module "graalvm_lambda" {
   dynamodb_table_name = var.dynamodb_table_name
   timeout             = 10
   arch                = var.arch
+  reserved_concurrent_executions = var.reserved_concurrent_executions
 }

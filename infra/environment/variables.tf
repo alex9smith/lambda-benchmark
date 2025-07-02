@@ -29,3 +29,8 @@ variable "ruby_runtime" {
   type = string
   default = "ruby3.3"
 }
+
+variable "reserved_concurrent_executions" {
+  type = number
+  default = 20
+}

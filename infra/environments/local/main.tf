@@ -8,4 +8,5 @@ module "environment" {
   owner = var.owner
   arch = "x86_64"
   ruby_runtime = "ruby3.2"
+  reserved_concurrent_executions = 1
 }
