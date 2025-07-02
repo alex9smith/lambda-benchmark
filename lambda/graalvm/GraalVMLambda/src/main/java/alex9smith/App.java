@@ -85,8 +85,10 @@ public class App implements RequestHandler<SQSEvent, Object> {
   @Override
   public SQSEvent handleRequest(final SQSEvent input, final Context context) {
     ArrayList<CompletableFuture<PutItemResponse>> futures = new ArrayList<>();
+    System.out.println(input);
     for (SQSMessage message : input.getRecords()) {
       try {
+        System.out.println(message.getBody());
         jsonSchema.validate(message.getBody(), InputFormat.JSON);
         Event event = objectMapper.readValue(message.getBody(), Event.class);
         PutItemRequest request = PutItemRequest.builder()
