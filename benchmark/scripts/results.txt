@@ -1,0 +1,44 @@
+[rich@richlap scripts]$ python analyse_results.py 
+Cold start times per language - p50, p95, p99
+                0.50       0.95       0.99
+name                                      
+graalvm      640.980   656.6270   670.6214
+java        2137.855  2188.1975  2188.4635
+python       698.490   727.4095   728.1619
+ruby        1080.360  1127.6720  1134.0944
+rust          52.450    56.0250    56.0930
+typescript   391.820   412.3895   419.2219
+----------
+Fontconfig warning: using without calling FcInit()
+Total billed time by language
+            init_duration_ms  execution_time_ms  total_time  init_percentage
+name                                                                        
+graalvm              9606.27            25519.0    35125.27         0.273486
+java                42752.17           185737.0   228489.17         0.187108
+python              14009.31            42591.0    56600.31         0.247513
+ruby                19452.38            94184.0   113636.38         0.171181
+rust                  582.99            28363.0    28945.99         0.020141
+typescript           7869.81            61775.0    69644.81         0.112999
+----------
+Execution time quantiles by language
+          name quantile    value
+0      graalvm      0.5    16.00
+1      graalvm     0.95    35.00
+2      graalvm     0.99   954.76
+3         java      0.5   135.50
+4         java     0.95   268.25
+5         java     0.99  5168.89
+6       python      0.5    68.00
+7       python     0.95    93.00
+8       python     0.99   198.00
+9         ruby      0.5   132.00
+10        ruby     0.95   174.00
+11        ruby     0.99   881.96
+12        rust      0.5    42.00
+13        rust     0.95    58.00
+14        rust     0.99   404.00
+15  typescript      0.5    69.00
+16  typescript     0.95   201.95
+17  typescript     0.99   757.00
+----------
+[rich@richlap scripts]$ ls plots
