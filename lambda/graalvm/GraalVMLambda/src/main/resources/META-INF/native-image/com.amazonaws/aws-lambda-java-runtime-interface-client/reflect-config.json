@@ -45,6 +45,7 @@
     "name":"com.amazonaws.services.lambda.runtime.events.SQSEvent",
     "allDeclaredFields":true,
     "allDeclaredClasses":true,
+    "allPublicMethods":true,
     "queryAllDeclaredMethods":true,
     "queryAllPublicMethods":true,
     "queryAllDeclaredConstructors":true,
