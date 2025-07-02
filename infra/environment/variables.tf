@@ -24,3 +24,8 @@ variable "arch" {
   type = string
   default = "arm64"
 }
+
+variable "ruby_runtime" {
+  type = string
+  default = "ruby3.3"
+}

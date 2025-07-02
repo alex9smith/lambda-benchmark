@@ -6,6 +6,7 @@ module "typescript_lambda" {
   runtime             = "nodejs20.x"
   handler             = "index.handler"
   dynamodb_table_name = var.dynamodb_table_name
+  arch                = var.arch
 }
 
 module "rust_lambda" {
@@ -16,6 +17,7 @@ module "rust_lambda" {
   runtime             = "provided.al2023"
   handler             = "bootstrap"
   dynamodb_table_name = var.dynamodb_table_name
+  arch                = var.arch
 }
 
 module "ruby_lambda" {
@@ -23,9 +25,10 @@ module "ruby_lambda" {
 
   source_file         = "../../../lambda/ruby/deploy.zip"
   language_name       = "ruby"
-  runtime             = "ruby3.3"
+  runtime             = var.ruby_runtime
   handler             = "lambda_function.Lambda::Handler.process"
   dynamodb_table_name = var.dynamodb_table_name
+  arch                = var.arch
 }
 
 module "python_lambda" {
@@ -36,6 +39,7 @@ module "python_lambda" {
   runtime             = "python3.12"
   handler             = "lambda_function.handler"
   dynamodb_table_name = var.dynamodb_table_name
+  arch                = var.arch
 }
 
 module "java_lambda" {
@@ -47,12 +51,13 @@ module "java_lambda" {
   handler             = "alex9smith.App::handleRequest"
   dynamodb_table_name = var.dynamodb_table_name
   timeout             = 10
+  arch                = var.arch
 }
 
 module "graalvm_lambda" {
   source = "../modules/lambda"
 
-  source_file         = "../../../lambda/graalvm/GraalVMLambda/target/function.zip"
+  source_file         = "../../../lambda/graalvm/GraalVMLambda/target/function-${var.arch}.zip"
   language_name       = "graalvm"
   runtime             = "provided.al2023"
   handler             = "alex9smith.App::handleRequest"
