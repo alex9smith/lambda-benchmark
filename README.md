@@ -14,6 +14,8 @@ They all share the same DynamoDB table so need to compete for read resource.
 The DynamoDB table has a randomly generated partition key to avoid 'hot' partitions.
 Each Lambda function bundles the minimal dependencies - usually just a library for JSON Schema validation and the necessary AWS / runtime dependencies.
 
+One of my colleagues has [extended the prototype](https://github.com/bmcgavin/lambda-benchmark) to also test Java through GraalVM.
+
 ## Requirements
 
 - Node >= v20
