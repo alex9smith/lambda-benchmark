@@ -36,10 +36,21 @@ npm run build
 
 ```
 
-Then deploy:
+Then deploy to Localstack to test:
 
 ```bash
-cd infra
+docker-compose up -d
+cd infra/environments/local
+tofu init
+tofu apply
+```
+
+## Deploying to AWS
+
+All lambdas built on an ARM Mac will run in AWS apart from the GraalVM lambda - follow instructions in its README.
+
+```
+cd infra/environments/production
 tofu init
 tofu apply
 ```
@@ -48,9 +59,26 @@ tofu apply
 
 Install the Python requirements and run the script to send events to the Lambdas:
 
+### Setup
+
+It may be necessary to install venv and install the benchmark requirements:
+
+```
+mkdir ~/.venv
+python3 -m venv ~/.venv
+source ~/.venv/bin/activate
+python3 -m pip install -r requirements.txt
+```
+
+Then to run the benchmark in localstack (presumably with a low job size to test):
+
+```
+AWS_DEFAULT_REGION=eu-west-2 AWS_ENDPOINT_URL=http://localhost:4566 AWS_REGION=eu-west-2 AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test python run_load_test.py
+```
+
+And for the real test in AWS where your credentials are set up:
+
 ```bash
-cd benchmark/scripts
-pip install -r requirements.txt
 python run_load_test.py
 ```
 
