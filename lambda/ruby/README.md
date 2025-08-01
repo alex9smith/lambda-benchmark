@@ -1,5 +1,13 @@
 # Ruby lambda
 
+## Preparation
+
+```
+brew install rbenv
+rbenv init
+rbenv install 3.2.9 # correct at time of writing, leave off patch version to find latest
+```
+
 ## Tests
 
 ```bash
