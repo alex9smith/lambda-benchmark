@@ -3,9 +3,10 @@ from typing import TypedDict
 from uuid import uuid4
 import json
 import boto3
+import os
 
 MAX_BATCH_SIZE = 10  # 10 is the limit on the SQS SendMessageBatch API
-EVENTS_PER_LAMBDA = 3000
+EVENTS_PER_LAMBDA = 3000 # Recommended to change to 1 if testing lambdas on Localstack
 
 
 class LiveLambdas(Enum):
@@ -71,7 +72,7 @@ def send_events_to_queue(queue, num_events: int) -> None:
 
 
 if __name__ == "__main__":
-    sqs = boto3.resource("sqs")
+    sqs = boto3.resource("sqs", endpoint_url=os.getenv("AWS_ENDPOINT_URL"))
 
     for language in LiveLambdas:
         print(f"Running for {language.name}")
