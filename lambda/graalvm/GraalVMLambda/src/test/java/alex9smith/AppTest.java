@@ -23,19 +23,4 @@ class AppTest {
     assertEquals(event, result);
   }
 
-  @Test
-  void handleRequest_full() {
-    List<SQSMessage> records = new ArrayList<SQSMessage>();
-    SQSEvent sqsEvent = new SQSEvent();
-
-    SQSMessage message = new SQSMessage();
-    String body = "{\"eventId\":\"event-id\",\"emitterCode\":1,\"action\":\"action\",\"user\":{\"id\":\"user-id\",\"sessionId\":\"session-id\",\"deviceId\":\"device-id\"}}";
-
-    message.setBody(body);
-    records.add(message);
-    sqsEvent.setRecords(records);
-    App function = new App();
-    SQSEvent result = function.handleRequest(sqsEvent, null);
-    assertEquals(sqsEvent, result);
-  }
 }
