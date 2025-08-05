@@ -1,0 +1,13 @@
+services:
+  localstack:
+    container_name: localstack
+    image: localstack/localstack:3.0.2
+    ports:
+      - 4566:4566
+      - 4510-4559:4510-4559
+    environment:
+      - DEBUG=${DEBUG-}
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - $PWD/.localstack-volume:/var/lib/localstack
+      - "/var/run/docker.sock:/var/run/docker.sock"

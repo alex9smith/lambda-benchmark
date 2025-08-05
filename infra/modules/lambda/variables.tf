@@ -36,3 +36,12 @@ variable "default_tags" {
   }
 }
 
+variable "arch" {
+  type = string
+  default = "arm64"
+}
+
+variable "reserved_concurrent_executions" {
+  type = number
+  default = 20
+}

@@ -7,9 +7,17 @@ rust is a Rust project that implements an AWS Lambda function in Rust.
 - [Rust](https://www.rust-lang.org/tools/install)
 - [Cargo Lambda](https://www.cargo-lambda.info/guide/installation.html)
 
+As you'll likely need multiple toolchains to build the lambda, it's recommended to install `rustup` and install the toolchain from there:
+
+```
+brew install rustup
+rustup default stable
+brew install cargo-lambda/tap/cargo-lambda
+```
+
 ## Building
 
-To build the project for production, run `cargo lambda build --release`. Remove the `--release` flag to build for development.
+To build the project for production, run `cargo lambda build --release -o zip --arm64`. Remove the `--release` flag to build for development.
 
 Read more about building your lambda function in [the Cargo Lambda documentation](https://www.cargo-lambda.info/commands/build.html).
 
